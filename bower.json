@@ -5,7 +5,7 @@
   "authors": [
     "caasi Huang <caasi.igd@gmail.com>"
   ],
-  "main": "main.js",
+  "main": "js/toys.js",
   "moduleType": [
     "globals"
   ],

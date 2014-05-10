@@ -1,3 +1,3 @@
 (function(){
-  console.log('foobar');
+  console.log(toys.DisplayObjectContainer);
 }).call(this);

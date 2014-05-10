@@ -2,7 +2,7 @@
   "name": "toys",
   "version": "0.0.1",
   "description": "canvas experiment",
-  "main": "main.js",
+  "main": "js/toys.js",
   "scripts": {
     "start": "gulp --require LiveScript",
     "test": "echo \"Error: no test specified\" && exit 1"

@@ -12,38 +12,29 @@ path =
 
 gulp.task \bower -> gulp-bower!
 
-gulp.task \fonts:vendor <[bower]> ->
-  gulp-bower-files!
-  .pipe gulp-filter <[**/*.eof **/*.ttf **/*.svg **/*.woff]>
-  .pipe gulp-flatten!
-  .pipe gulp.dest "#{path.build}/fonts"
-
-gulp.task \images:vendor <[bower]> ->
-  gulp-bower-files!
-  .pipe gulp-filter <[**/*.jpg **/*.jpeg **/*.png **/*.gif]>
-  .pipe gulp-flatten!
-  .pipe gulp.dest "#{path.build}/images"
-
 gulp.task \js:vendor <[bower]> ->
   gulp-bower-files!
   .pipe gulp-filter <[**/*.js !**/*.min.js]>
   .pipe gulp-concat 'vendor.js'
   .pipe gulp.dest "#{path.build}/js"
 
-gulp.task \js:app ->
+gulp.task \js:toys ->
   gulp.src do
-    * "#{path.src}/**/*.ls"
-    ...
-  .pipe gulp-concat 'main.ls'
+    * "#{path.src}/ls/core/DisplayObject.ls"
+      "#{path.src}/ls/core/DisplayObjectContainer.ls"
+  .pipe gulp-concat 'toys.ls'
   .pipe livescript!
   .pipe gulp.dest "#{path.build}/js"
   .pipe livereload!
 
-gulp.task \css:vendor <[bower]> ->
-  gulp-bower-files!
-  .pipe gulp-filter <[**/*.css !**/*.min.css]>
-  .pipe gulp-concat 'vendor.css'
-  .pipe gulp.dest "#{path.build}/css"
+gulp.task \js:app ->
+  gulp.src do
+    * "#{path.src}/ls/main.ls"
+      ...
+  .pipe gulp-concat 'main.ls'
+  .pipe livescript!
+  .pipe gulp.dest "#{path.build}/js"
+  .pipe livereload!
 
 gulp.task \css:app ->
   gulp.src do
@@ -54,7 +45,7 @@ gulp.task \css:app ->
   .pipe gulp.dest "#{path.build}/css"
   .pipe livereload!
 
-gulp.task \vendor <[fonts:vendor images:vendor js:vendor css:vendor]>
+gulp.task \vendor <[js:vendor]>
 
 gulp.task \html ->
   gulp.src "#{path.src}/*.jade"
@@ -62,7 +53,7 @@ gulp.task \html ->
   .pipe gulp.dest path.build
   .pipe livereload!
 
-gulp.task \build <[vendor js:app css:app html]>
+gulp.task \build <[vendor js:toys js:app css:app html]>
 
 gulp.task \server (next) ->
   server = new node-static.Server path.build
@@ -75,7 +66,7 @@ gulp.task \server (next) ->
 
 gulp.task \watch ->
   gulp.watch 'bower.json'             <[vendor]>
-  gulp.watch "#{path.src}/**/*.ls"    <[js:app]>
+  gulp.watch "#{path.src}/**/*.ls"    <[js:toys js:app]>
   gulp.watch "#{path.src}/**/*.styl"  <[css:app]>
   gulp.watch "#{path.src}/*.jade"     <[html]>
 
