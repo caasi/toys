@@ -1,7 +1,7 @@
 {
-  "name": "jsl-seed",
+  "name": "toys",
   "version": "0.0.1",
-  "description": "the seed for Jade, Stylus, LiveScript apps",
+  "description": "canvas experiment",
   "main": "main.js",
   "scripts": {
     "start": "gulp --require LiveScript",
