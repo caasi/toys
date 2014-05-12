@@ -1,23 +1,21 @@
 (function(){
-  var DisplayObject, ref$, DisplayObjectContainer;
+  var DisplayObject, ref$, DisplayObjectContainer, Symbol;
   DisplayObject = (function(){
     DisplayObject.displayName = 'DisplayObject';
     var prototype = DisplayObject.prototype, constructor = DisplayObject;
     function DisplayObject(){
-      this._shouldUpdateMatrix = false;
-      this.canvas = document.createElement('canvas');
+      if (typeof this.createCanvas === 'function') {
+        this.createCanvas();
+      }
       this._matrix = [1, 0, 0, 1, 0, 0];
-      this._x = 0;
-      this._y = 0;
-      this._scaleX = 1;
-      this._scaleY = 1;
-      this._rotation = 0;
-      this._centerX = 0;
-      this._centerY = 0;
     }
+    prototype.createCanvas = function(){
+      return this.canvas = document.createElement('canvas');
+    };
     Object.defineProperty(prototype, 'x', {
       get: function(){
-        return this._x;
+        var ref$;
+        return (ref$ = this._x) != null ? ref$ : 0;
       },
       set: function(v){
         if (this._x !== v) {
@@ -31,7 +29,8 @@
     });
     Object.defineProperty(prototype, 'y', {
       get: function(){
-        return this._y;
+        var ref$;
+        return (ref$ = this._y) != null ? ref$ : 0;
       },
       set: function(v){
         if (this._y !== v) {
@@ -45,7 +44,8 @@
     });
     Object.defineProperty(prototype, 'scaleX', {
       get: function(){
-        return this._scaleX;
+        var ref$;
+        return (ref$ = this._scaleX) != null ? ref$ : 1;
       },
       set: function(v){
         if (this._scaleX !== v) {
@@ -59,7 +59,8 @@
     });
     Object.defineProperty(prototype, 'scaleY', {
       get: function(){
-        return this._scaleY;
+        var ref$;
+        return (ref$ = this._scaleY) != null ? ref$ : 1;
       },
       set: function(v){
         if (this._scaleY !== v) {
@@ -73,7 +74,8 @@
     });
     Object.defineProperty(prototype, 'rotation', {
       get: function(){
-        return this._rotation;
+        var ref$;
+        return (ref$ = this._rotation) != null ? ref$ : 0;
       },
       set: function(v){
         if (this._rotation !== v) {
@@ -87,7 +89,8 @@
     });
     Object.defineProperty(prototype, 'centerX', {
       get: function(){
-        return this._centerX;
+        var ref$;
+        return (ref$ = this._centerX) != null ? ref$ : 0;
       },
       set: function(v){
         if (this._centerX !== v) {
@@ -101,7 +104,8 @@
     });
     Object.defineProperty(prototype, 'centerY', {
       get: function(){
-        return this._centerY;
+        var ref$;
+        return (ref$ = this._centerY) != null ? ref$ : 0;
       },
       set: function(v){
         if (this._centerY !== v) {
@@ -115,10 +119,10 @@
     });
     prototype.updateMatrix = function(){
       this._matrix = mat2d.create();
-      mat2d.translate(this._matrix, this._matrix, [this._x + this._centerX, this._y + this._centerY]);
-      mat2d.scale(this._matrix, this._matrix, [this._scaleX, this._scaleY]);
-      mat2d.rotate(this._matrix, this._matrix, this._rotation);
-      mat2d.translate(this._matrix, this._matrix, [-this._centerX, -this._centerY]);
+      mat2d.translate(this._matrix, this._matrix, [this.x + this.centerX, this.y + this.centerY]);
+      mat2d.scale(this._matrix, this._matrix, [this.scaleX, this.scaleY]);
+      mat2d.rotate(this._matrix, this._matrix, this.rotation);
+      mat2d.translate(this._matrix, this._matrix, [-this.centerX, -this.centerY]);
       this._shouldUpdateMatrix = false;
     };
     prototype.render = function(){
@@ -171,6 +175,18 @@
   ((ref$ = this.toys) != null
     ? ref$
     : this.toys = {}).DisplayObjectContainer = DisplayObjectContainer;
+  Symbol = (function(superclass){
+    var prototype = extend$((import$(Symbol, superclass).displayName = 'Symbol', Symbol), superclass).prototype, constructor = Symbol;
+    function Symbol(o){
+      Symbol.superclass.call(this);
+      this.canvas = o.canvas;
+    }
+    prototype.createCanvas = void 8;
+    return Symbol;
+  }(DisplayObject));
+  ((ref$ = this.toys) != null
+    ? ref$
+    : this.toys = {}).Symbol = Symbol;
   function extend$(sub, sup){
     function fun(){} fun.prototype = (sub.superclass = sup).prototype;
     (sub.prototype = new fun).constructor = sub;

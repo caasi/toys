@@ -1,5 +1,5 @@
 (function(){
-  var RedBox, BlueBox, x$, red, y$, blue, z$, root, z1$, update;
+  var RedBox, BlueBox, x$, red, y$, blue, z$, blue2, z1$, root, z2$, update;
   RedBox = (function(superclass){
     var prototype = extend$((import$(RedBox, superclass).displayName = 'RedBox', RedBox), superclass).prototype, constructor = RedBox;
     function RedBox(){
@@ -43,12 +43,16 @@
   y$ = blue = new BlueBox;
   y$.centerX = 25;
   y$.centerY = 25;
-  z$ = root = new toys.DisplayObjectContainer;
-  z1$ = z$.canvas;
-  z1$.width = 800;
-  z1$.height = 800;
-  z$.addChild(red);
-  z$.addChild(blue);
+  z$ = blue2 = new toys.Symbol(blue);
+  z$.x = 100;
+  z$.scaleY = 2;
+  z1$ = root = new toys.DisplayObjectContainer;
+  z2$ = z1$.canvas;
+  z2$.width = 400;
+  z2$.height = 400;
+  z1$.addChild(red);
+  z1$.addChild(blue);
+  z1$.addChild(blue2);
   update = function(){
     var x, y, r, x$;
     root.render();
