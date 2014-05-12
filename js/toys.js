@@ -4,25 +4,95 @@
     DisplayObject.displayName = 'DisplayObject';
     var prototype = DisplayObject.prototype, constructor = DisplayObject;
     function DisplayObject(){
-      var x$;
-      this._dirty = false;
-      x$ = this.canvas = document.createElement('canvas');
-      x$.width = 0;
-      x$.height = 0;
-      this._matrix = [1, 0, 0, 0, 1, 0, 0, 0, 0];
-      this.x = 0;
-      this.y = 0;
-      this.scaleX = 0;
-      this.scaleY = 0;
-      this.rotation = 0;
+      this._shouldUpdateMatrix = false;
+      this.canvas = document.createElement('canvas');
+      this._matrix = [1, 0, 0, 1, 0, 0];
+      this._x = 0;
+      this._y = 0;
+      this._scaleX = 1;
+      this._scaleY = 1;
+      this._rotation = 0;
     }
-    prototype.update = function(){
-      this._dirty = false;
-      return this.canvas.getContext('2d');
+    Object.defineProperty(prototype, 'x', {
+      get: function(){
+        return this._x;
+      },
+      set: function(v){
+        if (this._x !== v) {
+          this._x = v;
+          this._shouldUpdateMatrix = true;
+        }
+        this._x;
+      },
+      configurable: true,
+      enumerable: true
+    });
+    Object.defineProperty(prototype, 'y', {
+      get: function(){
+        return this._y;
+      },
+      set: function(v){
+        if (this._y !== v) {
+          this._y = v;
+          this._shouldUpdateMatrix = true;
+        }
+        this._y;
+      },
+      configurable: true,
+      enumerable: true
+    });
+    Object.defineProperty(prototype, 'scaleX', {
+      get: function(){
+        return this._scaleX;
+      },
+      set: function(v){
+        if (this._scaleX !== v) {
+          this._scaleX = v;
+          this._shouldUpdateMatrix = true;
+        }
+        this._scaleX;
+      },
+      configurable: true,
+      enumerable: true
+    });
+    Object.defineProperty(prototype, 'scaleY', {
+      get: function(){
+        return this._scaleY;
+      },
+      set: function(v){
+        if (this._scaleY !== v) {
+          this._scaleY = v;
+          this._shouldUpdateMatrix = true;
+        }
+        this._scaleY;
+      },
+      configurable: true,
+      enumerable: true
+    });
+    Object.defineProperty(prototype, 'rotation', {
+      get: function(){
+        return this._rotation;
+      },
+      set: function(v){
+        if (this._rotation !== v) {
+          this._rotation = v;
+          this._shouldUpdateMatrix = true;
+        }
+        this._rotation;
+      },
+      configurable: true,
+      enumerable: true
+    });
+    prototype.updateMatrix = function(){
+      this._matrix = mat2d.create();
+      mat2d.translate(this._matrix, this._matrix, [this._x, this._y]);
+      mat2d.scale(this._matrix, this._matrix, [this._scaleX, this._scaleY]);
+      mat2d.rotate(this._matrix, this._matrix, this._rotation);
+      this._shouldUpdateMatrix = false;
     };
     prototype.render = function(){
-      if (this._dirty) {
-        this.update();
+      if (this._shouldUpdateMatrix) {
+        this.updateMatrix();
       }
       return this.canvas;
     };
@@ -40,7 +110,6 @@
     }
     prototype.addChild = function(child){
       this._children.push(child);
-      this._dirty = true;
       return child;
     };
     prototype.removeChild = function(child){
@@ -48,22 +117,23 @@
       index = this._children.indexOf(child);
       if (index !== -1) {
         this._children.splice(index, 1);
-        this._dirty = true;
         return child;
       } else {}
     };
-    prototype.update = function(){
-      var ctx, i$, ref$, len$, child, x$;
-      ctx = superclass.prototype.update.call(this);
+    prototype.render = function(){
+      var x$, ctx, i$, ref$, len$, child, image, y$;
+      x$ = ctx = this.canvas.getContext('2d');
+      x$.clearRect(0, 0, this.canvas.width, this.canvas.height);
       for (i$ = 0, len$ = (ref$ = this._children).length; i$ < len$; ++i$) {
         child = ref$[i$];
-        x$ = ctx;
-        x$.save();
-        x$.transform(child._matrix);
-        x$.drawImage(child.render());
-        x$.restore();
+        image = child.render();
+        y$ = ctx;
+        y$.save();
+        y$.transform.apply(ctx, child._matrix);
+        y$.drawImage(image, 0, 0);
+        y$.restore();
       }
-      return ctx;
+      return superclass.prototype.render.call(this);
     };
     return DisplayObjectContainer;
   }(DisplayObject));
