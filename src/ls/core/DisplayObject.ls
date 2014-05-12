@@ -60,10 +60,10 @@ class DisplayObject
       @_center-y
   updateMatrix: !->
     @_matrix = mat2d.create!
-    mat2d.translate @_matrix, @_matrix, [@x + @center-x, @y + @center-y]
-    mat2d.scale     @_matrix, @_matrix, [@scale-x, @scale-y]
-    mat2d.rotate    @_matrix, @_matrix, @rotation
-    mat2d.translate @_matrix, @_matrix, [-@center-x, -@center-y]
+    mat2d.translate @_matrix, @_matrix, [@x + @center-x, @y + @center-y] # ^
+    mat2d.rotate    @_matrix, @_matrix, @rotation                        # |
+    mat2d.scale     @_matrix, @_matrix, [@scale-x, @scale-y]             # |
+    mat2d.translate @_matrix, @_matrix, [-@center-x, -@center-y]         # *
     @_should-update-matrix = false
   render: ->
     if @_should-update-matrix then @updateMatrix!

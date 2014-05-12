@@ -27,11 +27,20 @@ red = new RedBox
   ..y = 10
   ..scale-x = 2
 blue = new BlueBox
+  ..scale-x = 2
   ..center-x = 25
   ..center-y = 25
 blue2 = new toys.Symbol blue
   ..x = 100
   ..scale-y = 2
+
+another = new toys.DisplayObjectContainer
+  ..canvas
+    ..width  = 400
+    ..height = 400
+  ..x = 400
+  ..scale-x = -1
+  ..addChild blue
 
 root = new toys.DisplayObjectContainer
   ..canvas
@@ -40,6 +49,7 @@ root = new toys.DisplayObjectContainer
   ..addChild red
   ..addChild blue
   ..addChild blue2
+  ..addChild another
 
 update = ->
   root.render!

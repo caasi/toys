@@ -120,8 +120,8 @@
     prototype.updateMatrix = function(){
       this._matrix = mat2d.create();
       mat2d.translate(this._matrix, this._matrix, [this.x + this.centerX, this.y + this.centerY]);
-      mat2d.scale(this._matrix, this._matrix, [this.scaleX, this.scaleY]);
       mat2d.rotate(this._matrix, this._matrix, this.rotation);
+      mat2d.scale(this._matrix, this._matrix, [this.scaleX, this.scaleY]);
       mat2d.translate(this._matrix, this._matrix, [-this.centerX, -this.centerY]);
       this._shouldUpdateMatrix = false;
     };
