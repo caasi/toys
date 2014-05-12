@@ -12,6 +12,8 @@
       this._scaleX = 1;
       this._scaleY = 1;
       this._rotation = 0;
+      this._centerX = 0;
+      this._centerY = 0;
     }
     Object.defineProperty(prototype, 'x', {
       get: function(){
@@ -83,11 +85,40 @@
       configurable: true,
       enumerable: true
     });
+    Object.defineProperty(prototype, 'centerX', {
+      get: function(){
+        return this._centerX;
+      },
+      set: function(v){
+        if (this._centerX !== v) {
+          this._centerX = v;
+          this._shouldUpdateMatrix = true;
+        }
+        this._centerX;
+      },
+      configurable: true,
+      enumerable: true
+    });
+    Object.defineProperty(prototype, 'centerY', {
+      get: function(){
+        return this._centerY;
+      },
+      set: function(v){
+        if (this._centerY !== v) {
+          this._centerY = v;
+          this._shouldUpdateMatrix = true;
+        }
+        this._centerY;
+      },
+      configurable: true,
+      enumerable: true
+    });
     prototype.updateMatrix = function(){
       this._matrix = mat2d.create();
-      mat2d.translate(this._matrix, this._matrix, [this._x, this._y]);
+      mat2d.translate(this._matrix, this._matrix, [this._x + this._centerX, this._y + this._centerY]);
       mat2d.scale(this._matrix, this._matrix, [this._scaleX, this._scaleY]);
       mat2d.rotate(this._matrix, this._matrix, this._rotation);
+      mat2d.translate(this._matrix, this._matrix, [-this._centerX, -this._centerY]);
       this._shouldUpdateMatrix = false;
     };
     prototype.render = function(){

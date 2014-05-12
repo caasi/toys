@@ -13,6 +13,8 @@ class DisplayObject
     @_scale-x = 1
     @_scale-y = 1
     @_rotation = 0
+    @_center-x = 0
+    @_center-y = 0
   x:~
     -> @_x
     (v) ->
@@ -48,11 +50,26 @@ class DisplayObject
         @_rotation = v
         @_should-update-matrix = true
       @_rotation
+  center-x:~
+    -> @_center-x
+    (v) ->
+      if @_center-x isnt v
+        @_center-x = v
+        @_should-update-matrix = true
+      @_center-x
+  center-y:~
+    -> @_center-y
+    (v) ->
+      if @_center-y isnt v
+        @_center-y = v
+        @_should-update-matrix = true
+      @_center-y
   updateMatrix: !->
     @_matrix = mat2d.create!
-    mat2d.translate @_matrix, @_matrix, [@_x, @_y]
+    mat2d.translate @_matrix, @_matrix, [@_x + @_center-x, @_y + @_center-y]
     mat2d.scale     @_matrix, @_matrix, [@_scale-x, @_scale-y]
     mat2d.rotate    @_matrix, @_matrix, @_rotation
+    mat2d.translate @_matrix, @_matrix, [-@_center-x, -@_center-y]
     @_should-update-matrix = false
   render: ->
     if @_should-update-matrix then @updateMatrix!

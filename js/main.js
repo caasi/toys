@@ -1,5 +1,5 @@
 (function(){
-  var RedBox, BlueBox, x$, red, blue, y$, root, update;
+  var RedBox, BlueBox, x$, red, y$, blue, z$, root, z1$, update;
   RedBox = (function(superclass){
     var prototype = extend$((import$(RedBox, superclass).displayName = 'RedBox', RedBox), superclass).prototype, constructor = RedBox;
     function RedBox(){
@@ -40,19 +40,27 @@
   x$.x = 10;
   x$.y = 10;
   x$.scaleX = 2;
-  blue = new BlueBox;
-  y$ = root = new toys.DisplayObjectContainer;
-  y$.addChild(red);
-  y$.addChild(blue);
+  y$ = blue = new BlueBox;
+  y$.centerX = 25;
+  y$.centerY = 25;
+  z$ = root = new toys.DisplayObjectContainer;
+  z1$ = z$.canvas;
+  z1$.width = 800;
+  z1$.height = 800;
+  z$.addChild(red);
+  z$.addChild(blue);
   update = function(){
-    var x, y;
+    var x, y, r, x$;
     root.render();
     x = red.x + 1;
     red.x = x > root.canvas.width ? -200 : x;
     x = blue.x + 1;
     y = blue.y + 1;
-    blue.x = x > root.canvas.width ? -50 : x;
-    blue.y = y > root.canvas.height ? -50 : y;
+    r = blue.rotation + 3 * Math.PI / 180;
+    x$ = blue;
+    x$.x = x > root.canvas.width ? -50 : x;
+    x$.y = y > root.canvas.height ? -50 : y;
+    x$.rotation = r > 2 * Math.PI ? r - 2 * Math.PI : r;
     return requestAnimationFrame(update);
   };
   requestAnimationFrame(update);

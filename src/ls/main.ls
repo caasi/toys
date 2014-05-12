@@ -27,8 +27,13 @@ red = new RedBox
   ..y = 10
   ..scale-x = 2
 blue = new BlueBox
+  ..center-x = 25
+  ..center-y = 25
 
 root = new toys.DisplayObjectContainer
+  ..canvas
+    ..width  = 800
+    ..height = 800
   ..addChild red
   ..addChild blue
 
@@ -38,8 +43,12 @@ update = ->
   red.x = if x > root.canvas.width then -200 else x
   x = blue.x + 1
   y = blue.y + 1
-  blue.x = if x > root.canvas.width  then -50 else x
-  blue.y = if y > root.canvas.height then -50 else y
+  r = blue.rotation + 3 * Math.PI / 180
+  blue
+    ..x        = if x > root.canvas.width  then -50             else x
+    ..y        = if y > root.canvas.height then -50             else y
+    ..rotation = if r > 2 * Math.PI        then r - 2 * Math.PI else r
+
   requestAnimationFrame update
 requestAnimationFrame update
 
