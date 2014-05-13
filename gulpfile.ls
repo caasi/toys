@@ -20,7 +20,8 @@ gulp.task \js:vendor <[bower]> ->
 
 gulp.task \js:toys ->
   gulp.src do
-    * "#{path.src}/ls/core/DisplayObject.ls"
+    * "#{path.src}/ls/core/AABB.ls"
+      "#{path.src}/ls/core/DisplayObject.ls"
       "#{path.src}/ls/core/DisplayObjectContainer.ls"
       "#{path.src}/ls/core/Symbol.ls"
   .pipe gulp-concat 'toys.ls'

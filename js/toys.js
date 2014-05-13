@@ -1,5 +1,234 @@
 (function(){
-  var DisplayObject, ref$, DisplayObjectContainer, Symbol;
+  var AABB, ref$, DisplayObject, DisplayObjectContainer, Symbol;
+  AABB = (function(){
+    AABB.displayName = 'AABB';
+    var axises, scan, prototype = AABB.prototype, constructor = AABB;
+    axises = ['x', 'y'];
+    scan = function(group, axis){
+      var points, i$, len$, box, groups, g, d, p;
+      switch (false) {
+      case !!Array.isArray(group):
+        throw new Error('first argument should be an array');
+      case group[0].min[axis] !== undefined:
+        throw new Error('axis not found');
+      default:
+        points = [];
+        for (i$ = 0, len$ = group.length; i$ < len$; ++i$) {
+          box = group[i$];
+          if (!box.isEmpty()) {
+            points.push({
+              box: box,
+              value: box.min[axis],
+              depth: 1
+            });
+            points.push({
+              value: box.max[axis],
+              depth: -1
+            });
+          }
+        }
+        points.sort(function(a, b){
+          switch (false) {
+          case !(a.value < b.value):
+            return -1;
+          case a.value !== b.value:
+            return 0;
+          case !(a.value > b.value):
+            return 1;
+          }
+        });
+        groups = [];
+        g = [];
+        d = 0;
+        for (i$ = 0, len$ = points.length; i$ < len$; ++i$) {
+          p = points[i$];
+          d += p.depth;
+          if (d !== 0) {
+            if (p.box) {
+              g.push(p.box);
+            }
+          } else {
+            groups.push(g);
+            g = [];
+          }
+        }
+        return groups;
+      }
+    };
+    AABB.rdc = function(g, todo){
+      var results, res$, i$, len$, axis, gs, next;
+      todo == null && (todo = axises.slice());
+      switch (false) {
+      case !!Array.isArray(g):
+        throw new Error('first argument should be an array');
+      default:
+        res$ = [];
+        for (i$ = 0, len$ = todo.length; i$ < len$; ++i$) {
+          axis = todo[i$];
+          gs = scan(g, axis);
+          if (gs.length > 1) {
+            next = axises.slice();
+            next.splice(next.indexOf(axis), 1);
+            res$.push(Array.prototype.concat.apply([], (fn$.call(this))));
+          } else {
+            res$.push(gs);
+          }
+        }
+        results = res$;
+        return results.reduce(function(c, n){
+          if (c.length > n.length) {
+            return c;
+          } else {
+            return n;
+          }
+        });
+      }
+      function fn$(){
+        var i$, ref$, len$, results$ = [];
+        for (i$ = 0, len$ = (ref$ = gs).length; i$ < len$; ++i$) {
+          g = ref$[i$];
+          results$.push(this.rdc(g, next));
+        }
+        return results$;
+      }
+    };
+    AABB.collide = function(it){
+      var result, i$, to$, i, j$, to1$, j;
+      switch (false) {
+      case !!Array.isArray(it):
+        throw new Error('first argument should be an array');
+      default:
+        result = [];
+        for (i$ = 0, to$ = it.length; i$ < to$; ++i$) {
+          i = i$;
+          for (j$ = i + 1, to1$ = it.length; j$ < to1$; ++j$) {
+            j = j$;
+            if (it[i].intersect(it[j])) {
+              result.push([it[i], it[j]]);
+            }
+          }
+        }
+        return result;
+      }
+    };
+    AABB.hit = function(it){
+      var g;
+      switch (false) {
+      case !!Array.isArray(it):
+        throw new Error('first argument should be an array');
+      default:
+        return Array.prototype.concat.apply([], (function(){
+          var i$, ref$, len$, results$ = [];
+          for (i$ = 0, len$ = (ref$ = this.rdc(it)).length; i$ < len$; ++i$) {
+            g = ref$[i$];
+            results$.push(this.collide(g));
+          }
+          return results$;
+        }.call(this)));
+      }
+    };
+    function AABB(min, max){
+      this.min = min != null
+        ? min
+        : {
+          x: Infinity,
+          y: Infinity
+        };
+      this.max = max != null
+        ? max
+        : {
+          x: -Infinity,
+          y: -Infinity
+        };
+      if (isNaN(this.min.x)) {
+        this.min.x = Infinity;
+      }
+      if (isNaN(this.min.y)) {
+        this.min.y = Infinity;
+      }
+      if (isNaN(this.max.x)) {
+        this.max.x = -Infinity;
+      }
+      if (isNaN(this.max.y)) {
+        this.max.y = -Infinity;
+      }
+    }
+    Object.defineProperty(prototype, 'width', {
+      get: function(){
+        return this.max.x - this.min.x;
+      },
+      configurable: true,
+      enumerable: true
+    });
+    Object.defineProperty(prototype, 'height', {
+      get: function(){
+        return this.max.y - this.min.y;
+      },
+      configurable: true,
+      enumerable: true
+    });
+    Object.defineProperty(prototype, 'size', {
+      get: function(){
+        return this.width * this.height;
+      },
+      configurable: true,
+      enumerable: true
+    });
+    prototype.isEmpty = function(){
+      return this.min.x >= this.max.x || this.min.y >= this.max.y;
+    };
+    prototype.clone = function(){
+      return new AABB(this.min, this.max);
+    };
+    prototype.transform = function(m00, m01, m10, m11, m20, m21){
+      return new AABB({
+        x: m00 * this.min.x + m10 * this.min.y + m20,
+        y: m01 * this.min.x + m11 * this.min.y + m21
+      }, {
+        x: m00 * this.max.x + m10 * this.max.y + m20,
+        y: m01 * this.max.x + m11 * this.max.y + m21
+      });
+    };
+    prototype.addPoint = function(pt){
+      if (pt.x < this.min.x) {
+        this.min.x = pt.x;
+      }
+      if (pt.y < this.min.y) {
+        this.min.y = pt.y;
+      }
+      if (pt.x > this.max.x) {
+        this.max.x = pt.x;
+      }
+      if (pt.y > this.max.y) {
+        this.max.y = pt.y;
+      }
+    };
+    prototype.addBox = function(aabb){
+      if (aabb.min.x < this.min.x) {
+        this.min.x = aabb.min.x;
+      }
+      if (aabb.min.y < this.min.y) {
+        this.min.y = aabb.min.y;
+      }
+      if (aabb.max.x > this.max.x) {
+        this.max.x = aabb.max.x;
+      }
+      if (aabb.max.y > this.max.y) {
+        this.max.y = aabb.max.y;
+      }
+    };
+    prototype.containPoint = function(pt){
+      var ref$;
+      return (this.min.x < (ref$ = pt.x) && ref$ < this.max.x) && (this.min.y < (ref$ = pt.y) && ref$ < this.max.y);
+    };
+    prototype.intersect = function(it){
+      return this.min.x <= it.max.x && this.max.x >= it.min.x && this.min.y <= it.max.y && this.max.y >= it.min.y;
+    };
+    return AABB;
+  }());
+  ((ref$ = this.toys) != null
+    ? ref$
+    : this.toys = {}).AABB = AABB;
   DisplayObject = (function(){
     DisplayObject.displayName = 'DisplayObject';
     var prototype = DisplayObject.prototype, constructor = DisplayObject;
