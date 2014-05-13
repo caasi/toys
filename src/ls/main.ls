@@ -4,11 +4,9 @@ class RedBox extends toys.DisplayObject
     @canvas
       ..width  = 100
       ..height = 100
-  render: ->
-    @canvas.getContext \2d
-      ..fillStyle = \red
-      ..fillRect 0, 0, 100, 100
-    super!
+      ..getContext \2d
+        ..fillStyle = \red
+        ..fillRect 0, 0, 100, 100
 
 class BlueBox extends toys.DisplayObject
   ->
@@ -16,11 +14,9 @@ class BlueBox extends toys.DisplayObject
     @canvas
       ..width  = 50
       ..height = 50
-  render: ->
-    @canvas.getContext \2d
-      ..fillStyle = \blue
-      ..fillRect 0, 0, 50, 50
-    super!
+      ..getContext \2d
+        ..fillStyle = \blue
+        ..fillRect 0, 0, 50, 50
 
 red = new RedBox
   ..x = 10

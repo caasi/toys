@@ -13,17 +13,10 @@ class DisplayObjectContainer extends DisplayObject
       child
     else
       void
-  render: ->
+  render: !(parent-ctx) ->
     ctx = @canvas.getContext \2d
       ..clearRect 0, 0, @canvas.width, @canvas.height
-    for child in @_children
-      # update the matrix and canvas of this child
-      image = child.render!
-      ctx
-        ..save!
-        ..transform.apply ctx, child._matrix
-        ..drawImage image, 0, 0
-        ..restore!
-    super!
+    for child in @_children => child.render ctx
+    super parent-ctx if parent-ctx
 
 (@toys ?= {}).DisplayObjectContainer = DisplayObjectContainer

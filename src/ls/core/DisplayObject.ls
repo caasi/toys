@@ -65,8 +65,14 @@ class DisplayObject
     mat2d.scale     @_matrix, @_matrix, [@scale-x, @scale-y]             # |
     mat2d.translate @_matrix, @_matrix, [-@center-x, -@center-y]         # *
     @_should-update-matrix = false
-  render: ->
+  render: !(parent-ctx) ->
     if @_should-update-matrix then @updateMatrix!
-    @canvas
+    # let the child controls how to draw itself,
+    # then we can cache it later
+    parent-ctx
+      ..save!
+      ..transform.apply parent-ctx, @_matrix
+      ..drawImage @canvas, 0, 0
+      ..restore!
 
 (@toys ?= {}).DisplayObject = DisplayObject

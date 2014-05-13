@@ -125,11 +125,16 @@
       mat2d.translate(this._matrix, this._matrix, [-this.centerX, -this.centerY]);
       this._shouldUpdateMatrix = false;
     };
-    prototype.render = function(){
+    prototype.render = function(parentCtx){
+      var x$;
       if (this._shouldUpdateMatrix) {
         this.updateMatrix();
       }
-      return this.canvas;
+      x$ = parentCtx;
+      x$.save();
+      x$.transform.apply(parentCtx, this._matrix);
+      x$.drawImage(this.canvas, 0, 0);
+      x$.restore();
     };
     return DisplayObject;
   }());
@@ -155,20 +160,17 @@
         return child;
       } else {}
     };
-    prototype.render = function(){
-      var x$, ctx, i$, ref$, len$, child, image, y$;
+    prototype.render = function(parentCtx){
+      var x$, ctx, i$, ref$, len$, child;
       x$ = ctx = this.canvas.getContext('2d');
       x$.clearRect(0, 0, this.canvas.width, this.canvas.height);
       for (i$ = 0, len$ = (ref$ = this._children).length; i$ < len$; ++i$) {
         child = ref$[i$];
-        image = child.render();
-        y$ = ctx;
-        y$.save();
-        y$.transform.apply(ctx, child._matrix);
-        y$.drawImage(image, 0, 0);
-        y$.restore();
+        child.render(ctx);
       }
-      return superclass.prototype.render.call(this);
+      if (parentCtx) {
+        superclass.prototype.render.call(this, parentCtx);
+      }
     };
     return DisplayObjectContainer;
   }(DisplayObject));

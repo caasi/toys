@@ -3,37 +3,29 @@
   RedBox = (function(superclass){
     var prototype = extend$((import$(RedBox, superclass).displayName = 'RedBox', RedBox), superclass).prototype, constructor = RedBox;
     function RedBox(){
-      var x$;
+      var x$, y$;
       RedBox.superclass.call(this);
       x$ = this.canvas;
       x$.width = 100;
       x$.height = 100;
+      y$ = x$.getContext('2d');
+      y$.fillStyle = 'red';
+      y$.fillRect(0, 0, 100, 100);
     }
-    prototype.render = function(){
-      var x$;
-      x$ = this.canvas.getContext('2d');
-      x$.fillStyle = 'red';
-      x$.fillRect(0, 0, 100, 100);
-      return superclass.prototype.render.call(this);
-    };
     return RedBox;
   }(toys.DisplayObject));
   BlueBox = (function(superclass){
     var prototype = extend$((import$(BlueBox, superclass).displayName = 'BlueBox', BlueBox), superclass).prototype, constructor = BlueBox;
     function BlueBox(){
-      var x$;
+      var x$, y$;
       BlueBox.superclass.call(this);
       x$ = this.canvas;
       x$.width = 50;
       x$.height = 50;
+      y$ = x$.getContext('2d');
+      y$.fillStyle = 'blue';
+      y$.fillRect(0, 0, 50, 50);
     }
-    prototype.render = function(){
-      var x$;
-      x$ = this.canvas.getContext('2d');
-      x$.fillStyle = 'blue';
-      x$.fillRect(0, 0, 50, 50);
-      return superclass.prototype.render.call(this);
-    };
     return BlueBox;
   }(toys.DisplayObject));
   x$ = red = new RedBox;
